@@ -1,0 +1,1 @@
+- Fix the problem with the loading of images, due to cross origin request block.
