@@ -8,17 +8,29 @@ from flask import Flask, render_template, redirect, url_for, request, abort, jso
 Username: UUID for every user
 
 
+User (Obj)
+	userID (string Prop)
+	highscore (Int Prop)
 
 Routes:
 
 GET:
 	/highscore/:userID
+		Get the user object with userID and extract the highscore
 		Get the user with "userID"'s highscore
 
 POST:
 	/highscore/:userID/:score
-		Takes a score for a user ID, check against DB. If score higher than highscore, update it and respond with true, else false
-	
+		Use route "/highscore/:userID" to get highscore
+		If score higher than highscore, update DB and respond with true, else respond with false
+
+
+	/user/create/:userID
+		Creates a user with "userID" if userID does not exists
+		returns true or false based on the user stat
+
+
+
 	What is a url for the user to play with in multiplayer mode?
 	Build in the API to share the highscore to social media
 
