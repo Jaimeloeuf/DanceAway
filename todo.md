@@ -24,6 +24,13 @@ The fact should correspond to how well your performance is in the game
 
 
 ### Multiplayer
+- When both players are ready, when they sent the ready signal to the server.
+- Print "waiting for opponents" before the start game signal is received
+- The server will send the start game signal to the front-end.
+	Upon receiving the signal on the front-end, start countdown to game.
+	Start game and the server will just wait for results.
+
+
 - Out of the 2 user playing, 1 must press play multiplayer.
 	- After pressing, user must enter the opponent's userID
 	- The multiplayer request will be shown on the opponent's screen with a accept/reject request menu

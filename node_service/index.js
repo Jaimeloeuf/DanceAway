@@ -1,7 +1,8 @@
 'use strict'; // Enforce use of strict verion of JavaScript
 
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
+const db = require('./db');
 
 /* Global variables */
 const port = 3000;
@@ -35,18 +36,28 @@ app.get('/ping', (req, res, next) => {
 });
 
 
-/* Should I create my own db module wrapper or is the DB part easy enough for the individual funcs to use */
-
-app.post('/highscore/:userID', (req, res, next) => {
-	// Get highscore with userID and set it as the response body
-	res.body = get_highscore(req.params.userID);
-
+// API to get the highscore of the user with "userID"
+app.get('/highscore/:userID', (req, res, next) => {
+	// Get highscore with userID and send it back as a JSON string
+	res.end(JSON.stringify({
+		res: db.get_highscore(req.params.userID)
+	}));
 });
 
-app.get('/', (req, res, next) => {
-
+// API to set a highscore for user with "userID"
+app.post('/highscore/:userID/:score', (req, res, next) => {
+	// Update highscore and respond back with a boolean to indicate operation success
+	res.end(JSON.stringify({
+		res: db.set_highscore(req.params.userID, req.params.score)
+	}));
 });
 
+// Function to get the leaderboard
+app.get('/leaderboard', (req, res, next) => {
+	res.end(JSON.stringify({
+		res: db.get_leaderboard()
+	}));
+});
 
 // 404 route handler
 app.use((req, res, next) => {
@@ -59,5 +70,5 @@ app.use((err, req, res, next) => {
 	res.status(500).send('Something broke!')
 });
 
-
+// Listen to the port specified by the global variable
 app.listen(port, () => print(`Server listening to port ${port}`));

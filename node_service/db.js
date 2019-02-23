@@ -72,7 +72,11 @@ function set_highscore(userID, score) {
 		update_leaderboard({ userID: userID, score: score });
 		// Call function to update the user DB with the new data
 		update_db('user', userDB);
+		// Return true to indicate update success
+		return true;
 	}
+	// Return false to indicate update failed as score not new highscore
+	return false;
 };
 
 function reset_highscore(userID) {
