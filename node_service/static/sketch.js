@@ -1,7 +1,9 @@
 // Global variables for use of reference
 var video;
 var poseNet;
-let count;
+// Every player starts off with 3 Lives
+var lives = 3;
+var score = 0;
 let skeletons = [];
 let noseX = 0;
 let noseY = 0;
@@ -31,18 +33,42 @@ function setup() {
 	createCanvas(640, 480);
 	// Read from the WebCam output videostream
 	video = createCapture(VIDEO);
+	// Size the video to the same size as the canvas
+	video.size(640, 480);
+
+
 	// Hide the video feed, only the AR overlayed videostream is displayed
 	video.hide();
 	// Use poseNet from ml5 lib to get user's poses
 	poseNet = ml5.poseNet(video, modelReady);
-	poseNet.on('pose', gotPoses);
+	poseNet.on('pose', getPoses);
 
-	score = 0;
-	time = 0;
-	count = 0;
+
+	pause_button = createButton('Pause');
+	pause_button.mousePressed(pause_game);
+
+	continue_button = createButton('Continue');
+	continue_button.mousePressed(continue_game);
+
+	// Set text size for the scoreboard and live count
+	textSize(32);
 }
 
-function gotPoses(poses) {
+function pause_game() {
+	// Stop the video capture
+	video.stop();
+	// Stop the draw() loop
+	noLoop();
+}
+
+function continue_game() {
+	// Stop the video capture
+	video.start();
+	// Stop the draw() loop
+	loop();
+}
+
+function getPoses(poses) {
 	if (poses.length > 0) {
 		noseX = poses[0].pose.keypoints[0].position.x;
 		noseY = poses[0].pose.keypoints[0].position.y;
@@ -58,12 +84,6 @@ function gotPoses(poses) {
 
 		wrist2X = poses[0].pose.keypoints[10].position.x; //right wrist
 		wrist2Y = poses[0].pose.keypoints[10].position.y;
-
-		// elbow1X = poses[0].pose.keypoints[7].position.x; //left elbow
-		// elbow1Y = poses[0].pose.keypoints[7].position.y;
-
-		// elbow2X = poses[0].pose.keypoints[8].position.x; //right elbow
-		// elbow2Y = poses[0].pose.keypoints[8].position.y;
 	}
 }
 
@@ -71,16 +91,14 @@ function modelReady() {
 }
 
 function draw() {
-	tint(255, 255, 255);
+	translate(video.width, 0);
+	scale(-1.0, 1.0);
 	image(video, 0, 0);
-
 
 	let d = dist(noseX, noseY, eye1X, eye1Y);
 
-	fill(255, 0, 0);
-	ellipse(wrist1X, wrist1Y, d); //draw wrist
-
-	fill(255, 0, 0);
+	// Call to draw wrists out
+	ellipse(wrist1X, wrist1Y, d);
 	ellipse(wrist2X, wrist2Y, d);
 
 	for (let i = 0, len = cupcake.length; i < len; i++) {
@@ -92,13 +110,16 @@ function draw() {
 		const hit = hits(wrist1X, wrist1Y, cupcake[i].x, cupcake[i].y);
 		const hit2 = hits2(wrist2X, wrist2Y, cupcake[i].x, cupcake[i].y);
 
+		// Unhealthy food category, thus minus a life when caught
 		if (hit) {
 			cupcake.splice(0, 1);
-			score = score - 3;
+			// score = score - 3;
+			--lives;
 		}
 		if (hit2) {
 			cupcake.splice(0, 1);
-			score = score - 3;
+			// score = score - 3;
+			--lives;
 		}
 	}
 
@@ -114,11 +135,13 @@ function draw() {
 		const hit2 = hits2(wrist2X, wrist2Y, coke[i].x, coke[i].y);
 		if (hit) {
 			coke.splice(0, 1);
-			score = score - 5;
+			// score = score - 5;
+			--lives;
 		}
 		if (hit2) {
 			coke.splice(0, 1);
-			score = score - 5;
+			// score = score - 5;
+			--lives;
 		}
 	}
 
@@ -176,10 +199,23 @@ function draw() {
 		}
 	}
 
+	// Update the game stats at the end of every drawing loop
+	update_game_stats()
 
-	textSize(32);
-	text("Score:", 20, 40);
-	text(score, 120, 40);
+	// If no more lives left, stop the game
+	if (!lives) {
+		// Stop the video capture
+		video.stop();
+		// Stop the draw() loop
+		noLoop();
+		// Write to the user about the results and the leaderboard
+
+	}
+}
+
+function update_game_stats() {
+	document.getElementById('lives').innerHTML = `Lives: ${lives}`;
+	document.getElementById('score').innerHTML = `Score: ${score}`;
 }
 
 function hits(wx, wy, hbx, hby) {
