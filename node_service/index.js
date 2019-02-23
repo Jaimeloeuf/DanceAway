@@ -2,7 +2,12 @@
 
 const express = require('express');
 const app = express();
+const http = require('http').Server(app);
+// Socket.io used to maintain active web-sockets
+const io = require('socket.io')(http);
 const db = require('./db');
+// Finalhandler module to deal with responding back to the client and closing the connection
+
 
 /* Global variables */
 const port = 3000;
@@ -13,17 +18,18 @@ const error = console.error;
 const write = process.stdout.write;
 
 
-// Finalhandler module to deal with responding back to the client and closing the connection
+// socket.io events
+// io.on('connection', (socket) => {
+// 	print('a user connected');
+// 	socket.on('disconnect', () => print('user disconnected'));
+// 	socket.on('message', (msg) => print(msg));
+// 	// socket.emit('message', 'New msg from server')
+// 	socket.broadcast.emit('message', 'msg to all units')
+// });
 
-// Socket.io used to maintain active web-sockets
 
 // Allow express to serve static content to the User from the static assets directory
 app.use(express.static('static'))
-
-// Home page front of the service
-app.get('/', (req, res, next) => {
-	res.end('Hi');
-});
 
 // Ping Route to check server status
 app.get('/ping', (req, res, next) => {
@@ -33,9 +39,16 @@ app.get('/ping', (req, res, next) => {
 		- Load of the server?
 	*/
 
-	res.end('Server up');
+	res.end(JSON.stringify({
+		status: 'Server Up',
+		alive_sockets: get_socket_count()
+	}));
 });
 
+// Function to get the number of live web-socket connections held by the server
+function get_socket_count() {
+	return 1;
+}
 
 // API to get the highscore of the user with "userID"
 app.get('/highscore/:userID', (req, res, next) => {
@@ -71,5 +84,5 @@ app.use((err, req, res, next) => {
 	res.status(500).send('Something broke!')
 });
 
-// Listen to the port specified by the global variable
-app.listen(port, () => print(`Server listening to port ${port}`));
+// Make the HTTP server listen to the port specified by the global variable
+http.listen(port, () => print(`Server listening to port ${port}`));
