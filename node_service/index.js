@@ -17,7 +17,8 @@ const write = process.stdout.write;
 
 // Socket.io used to maintain active web-sockets
 
-
+// Allow express to serve static content to the User from the static assets directory
+app.use(express.static('static'))
 
 // Home page front of the service
 app.get('/', (req, res, next) => {
