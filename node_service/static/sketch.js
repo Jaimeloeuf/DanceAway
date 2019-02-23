@@ -135,12 +135,10 @@ function draw() {
 		const hit2 = hits2(wrist2X, wrist2Y, coke[i].x, coke[i].y);
 		if (hit) {
 			coke.splice(0, 1);
-			// score = score - 5;
 			--lives;
 		}
 		if (hit2) {
 			coke.splice(0, 1);
-			// score = score - 5;
 			--lives;
 		}
 	}
@@ -209,8 +207,21 @@ function draw() {
 		// Stop the draw() loop
 		noLoop();
 		// Write to the user about the results and the leaderboard
-
+		print_leaderboard();
 	}
+}
+
+function print_leaderboard() {
+	/* Fetch the leaderboard data from the server and create HTML block to display */
+
+	// Fetch the data over
+	fetch('http://localhost:3000/leaderboard')
+		.then((response) => {
+			print(response);
+			leaderboard = JSON.parse(response)['res'];
+		});
+	
+	// Create the HTML element
 }
 
 function update_game_stats() {
@@ -218,17 +229,20 @@ function update_game_stats() {
 	document.getElementById('score').innerHTML = `Score: ${score}`;
 }
 
+// The smaller the value the threshold, the nearer the 2 points must meet to catch the item.
+const dist_threshold = 50;
+
 function hits(wx, wy, hbx, hby) {
-	if (dist(wx, 0, hbx, 0) < 80) {
-		if (dist(0, wy, 0, hby) < 80) {
+	if (dist(wx, 0, hbx, 0) < dist_threshold) {
+		if (dist(0, wy, 0, hby) < dist_threshold) {
 			return true;
 		}
 	} else return false
 }
 
 function hits2(wx, wy, hbx, hby) {
-	if (dist(wx, 0, hbx, 0) < 80) {
-		if (dist(0, wy, 0, hby) < 80) {
+	if (dist(wx, 0, hbx, 0) < dist_threshold) {
+		if (dist(0, wy, 0, hby) < dist_threshold) {
 			return true
 		}
 	} else return false
