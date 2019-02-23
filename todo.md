@@ -11,10 +11,11 @@
 
 
 
-Things falling down:
-Mineral Water bottle (+ 10)  Disappear when hit and point change
-Apple (+8) Disappear when hit and point change
-Sugar (-5)   Disappear when hit , change to a cross and point change
+Things falling down  (Disappear when hit and point change)
+- Mineral Water bottle (+ 5)
+- Sugary bottled drinks (- 5)   Disappear when hit , change to a cross and point change
+- Apple (+ 3) Disappear when hit and point change
+- Bread (- 3)
 
 
 Random health/diabetes fact at the end of the game using the RapidAPI provided facts to spread awareness of diabetes.
