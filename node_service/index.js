@@ -45,6 +45,10 @@ app.get('/ping', (req, res, next) => {
 	}));
 });
 
+app.get('/game', (req, res, next) => {	
+	res.end(req.query.userID);
+});
+
 // Function to get the number of live web-socket connections held by the server
 function get_socket_count() {
 	return 1;

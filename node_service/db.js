@@ -62,7 +62,7 @@ const update_db = (db, data) => {
 function get_highscore(userID) {
 	return userDB[userID];
 };
-
+// What if it is a new user?
 function set_highscore(userID, score) {
 	// Set the score as highscore if score higher than highscore
 	if (score > get_highscore(userID)) {
@@ -131,20 +131,20 @@ function update_leaderboard(userObj) {
 }
 
 // Self-invoking main function for testing
-// (function main() {
-// 	setTimeout(() => {
-// 		print(userDB)
-// 		print(leaderboard);
+/* (function main() {
+	setTimeout(() => {
+		print(userDB)
+		print(leaderboard);
 
-// 		print(get_highscore('jj'));
-// 		// reset_highscore();
-// 		set_highscore('jj', 12);
+		print(get_highscore('jj'));
+		// reset_highscore();
+		set_highscore('jj', 12);
 
-// 		print(userDB)
+		print(userDB)
 
-// 		print(leaderboard);
-// 	}, 100);
-// })();
+		print(leaderboard);
+	}, 100);
+})(); */
 
 module.exports = {
 	// Allow external modules to use all highscore related functions
