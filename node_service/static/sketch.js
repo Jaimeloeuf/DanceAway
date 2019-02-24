@@ -203,6 +203,24 @@ function draw() {
 		document.getElementById('lives').innerHTML = '';
 		// Write to the user about the results and the leaderboard
 		print_leaderboard();
+		getFood();
+	}
+}
+
+function generateRandomQuestion() {
+	var fruits = ["How many vitamin c are there in 2 apples?", "How many vitamin c are there in 2 Orange?", "How many vitamin c are there in 2 Banana?"];
+	return fruits[Math.floor((Math.random() * 2) + 1)]
+}
+
+function getFood() {
+	const http = new XMLHttpRequest();
+	var question = generateRandomQuestion();
+	const url = 'https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/quickAnswer?q=' + encodeURI(question);
+	http.open("GET", url);
+	http.setRequestHeader("X-RapidAPI-Key", "15409923e6mshd754f3ed4a3971ap11964djsn74692d63785c");
+	http.send();
+	http.onreadystatechange = (e) => {
+		document.getElementById('lives').innerHTML = `Foood Trivia:</h4><br><h4>${JSON.parse(http.responseText).answer}`;
 	}
 }
 
@@ -211,20 +229,23 @@ function print_leaderboard() {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function () {
 		if (this.readyState == 4 && this.status == 200) {
-
 			/* Create the HTML element */
 			// Find a <table> element with id="leaderboard":
 			let table = document.getElementById("leaderboard");
 			// Create an empty <tr> element and add it to the 1st position of the table:
-			let row = table.insertRow(0);
+			let row = table.insertRow(-1);
 			// Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
 			row.insertCell(0).innerHTML = "Username";
 			row.insertCell(1).innerHTML = "Highscore";
 
-			// for (let i = 0; i< 10; i++) {
-			// 	this.responseText
-			// }
-			print(JSON.parse(this.responseText).res)
+			// Parse and extract out the leaderboard
+			let leaderboard = JSON.parse(this.responseText).res;
+
+			for (let i = 0; i < 10; i++) {
+				row = table.insertRow(-1);
+				row.insertCell(0).innerHTML = leaderboard[i].userID;
+				row.insertCell(1).innerHTML = leaderboard[i].score;
+			}
 		}
 	};
 	xhttp.open("GET", "http://localhost:3000/leaderboard", true);

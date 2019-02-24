@@ -9,7 +9,7 @@ const print = console.log;
 // Global in memory reference of the user DB. Users are basically kv pairs of userID and highscore
 var userDB;
 // Global in memory reference of leaderboard DB. Will be an array of user objects
-var Leaderboard;
+var leaderboard;
 
 /*
 	Every DB is a corresponding JSON file that already exists.
@@ -54,7 +54,7 @@ const update_db = (db, data) => {
 		.then((data) => userDB = data);
 	// Read array property of 'top10' key out and store in memory
 	read_db('leaderboard')
-		.then((data) => Leaderboard = data['top10']);
+		.then((data) => leaderboard = data['top10']);
 })();
 
 
@@ -99,26 +99,30 @@ function reset_highscore(userID) {
 function update_leaderboard(userObj) {
 	// Loop through the leaderboard to see if score qualifies
 	for (let i = 0; i < 10; i++) {
-		if (userObj.score > Leaderboard[i].score) {
+		if (userObj.score > leaderboard[i].score) {
 			// Insert the element into the array at the specified index
-			Leaderboard.splice(i, 0, userObj);
+			leaderboard.splice(i, 0, userObj);
 
 			// Loop through the rest of the leaderboard to find if same user had other leaderboard entries
 			for (let j = (i + 1); j < 10; j++) {
 				// If the user have any other entries with a lower highscore
-				if (userObj.userID === Leaderboard[j].userID) {
+				if (userObj.userID === leaderboard[j].userID) {
 					// Remove the entry with the lower highscore
-					Leaderboard.splice(j, 1);
+					leaderboard.splice(j, 1);
+
+					// Persists the changes/updates to the leaderboard onto disk
+					update_db('leaderboard', { top10: leaderboard });
+
 					// Break out of the function after cleaning up the score and making sure the leaderboard is still for top 10 players
 					return;
 				}
 			}
 
 			// Remove the last element from the leaderboard if no other entry from the same user
-			Leaderboard.pop();
+			leaderboard.pop();
 
 			// Persists the changes/updates to the leaderboard onto disk
-			update_db('leaderboard', Leaderboard);
+			update_db('leaderboard', { top10: leaderboard });
 
 			// Break out of the loop after insertion and maintaining 10 ppl in the leaderboard
 			return;
@@ -127,20 +131,20 @@ function update_leaderboard(userObj) {
 }
 
 // Self-invoking main function for testing
-/* (function main() {
-	setTimeout(() => {
-		print(userDB)
-		print(Leaderboard);
+// (function main() {
+// 	setTimeout(() => {
+// 		print(userDB)
+// 		print(leaderboard);
 
-		print(get_highscore('jj'));
-		// reset_highscore();
-		set_highscore('jj', 12);
+// 		print(get_highscore('jj'));
+// 		// reset_highscore();
+// 		set_highscore('jj', 12);
 
-		print(userDB)
+// 		print(userDB)
 
-		print(Leaderboard);
-	}, 100);
-})(); */
+// 		print(leaderboard);
+// 	}, 100);
+// })();
 
 module.exports = {
 	// Allow external modules to use all highscore related functions
@@ -148,5 +152,5 @@ module.exports = {
 	set_highscore: set_highscore,
 	reset_highscore: reset_highscore,
 	// Allow external modules access to a copy of the leaderboard array
-	get_leaderboard: () => Leaderboard.slice(0)
+	get_leaderboard: () => leaderboard.slice(0)
 };
