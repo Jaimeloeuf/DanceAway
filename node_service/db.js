@@ -58,10 +58,35 @@ const update_db = (db, data) => {
 })();
 
 
+function create_user(userID) {
+	// Creates a user entry in the userDB if the input userID does not collide with existing names
+
+	if (Object(userDB).hasOwnKeys(userID))
+		return false; // To indicate operation failure
+
+	else {
+		userDB[userID] = 0; // Create user entry and set default highscore to 0
+		// Update user DB after the change of the in memory data object
+		update_db('user', userDB);
+		return true; // To indicate operation success
+	}
+}
+
+
 /* Highscore related functions */
 function get_highscore(userID) {
+	// If user with userID does not exist, create a new user entry
+	if (!userDB.user.userID){
+		create_user(userID);
+	}
+	// SHould I call create_user always but expect a false to be returned to continue with getting highscore
+	// Because even if no such user exists, a call to the create_user function will always ensure that the user
+	// with that userID now exists regardless of whether it is newly created or not.
+
+	// Return the highscore of the user
 	return userDB[userID];
 };
+
 // What if it is a new user?
 function set_highscore(userID, score) {
 	// Set the score as highscore if score higher than highscore
@@ -109,42 +134,22 @@ function update_leaderboard(userObj) {
 				if (userObj.userID === leaderboard[j].userID) {
 					// Remove the entry with the lower highscore
 					leaderboard.splice(j, 1);
-
 					// Persists the changes/updates to the leaderboard onto disk
 					update_db('leaderboard', { top10: leaderboard });
-
 					// Break out of the function after cleaning up the score and making sure the leaderboard is still for top 10 players
 					return;
 				}
 			}
-
+			
 			// Remove the last element from the leaderboard if no other entry from the same user
 			leaderboard.pop();
-
 			// Persists the changes/updates to the leaderboard onto disk
 			update_db('leaderboard', { top10: leaderboard });
-
 			// Break out of the loop after insertion and maintaining 10 ppl in the leaderboard
 			return;
 		}
 	}
 }
-
-// Self-invoking main function for testing
-/* (function main() {
-	setTimeout(() => {
-		print(userDB)
-		print(leaderboard);
-
-		print(get_highscore('jj'));
-		// reset_highscore();
-		set_highscore('jj', 12);
-
-		print(userDB)
-
-		print(leaderboard);
-	}, 100);
-})(); */
 
 module.exports = {
 	// Allow external modules to use all highscore related functions

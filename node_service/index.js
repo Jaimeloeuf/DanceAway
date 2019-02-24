@@ -31,6 +31,13 @@ const write = process.stdout.write;
 // Allow express to serve static content to the User from the static assets directory
 app.use(express.static('static'))
 
+// Wrapper function over JSON.stringify to catch potential errors with a try/catch block
+function JSON_string(object) {
+	try {
+		return JSON.stringify(object);
+	} catch (err) { error(err); } // Log errors if any and continue
+}
+
 // Ping Route to check server status
 app.get('/ping', (req, res, next) => {
 	/*	Things to return to client
@@ -39,13 +46,14 @@ app.get('/ping', (req, res, next) => {
 		- Load of the server?
 	*/
 
-	res.end(JSON.stringify({
+	res.end(JSON_string({
 		status: 'Server Up',
 		alive_sockets: get_socket_count()
 	}));
 });
 
 app.get('/game', (req, res, next) => {	
+	// UserID is part of the URL encoded query string
 	res.end(req.query.userID);
 });
 
@@ -57,7 +65,7 @@ function get_socket_count() {
 // API to get the highscore of the user with "userID"
 app.get('/highscore/:userID', (req, res, next) => {
 	// Get highscore with userID and send it back as a JSON string
-	res.end(JSON.stringify({
+	res.end(JSON_string({
 		res: db.get_highscore(req.params.userID)
 	}));
 });
@@ -65,14 +73,14 @@ app.get('/highscore/:userID', (req, res, next) => {
 // API to set a highscore for user with "userID"
 app.post('/highscore/:userID/:score', (req, res, next) => {
 	// Update highscore and respond back with a boolean to indicate operation success
-	res.end(JSON.stringify({
+	res.end(JSON_string({
 		res: db.set_highscore(req.params.userID, req.params.score)
 	}));
 });
 
 // Function to get the leaderboard
 app.get('/leaderboard', (req, res, next) => {
-	res.end(JSON.stringify({
+	res.end(JSON_string({
 		res: db.get_leaderboard()
 	}));
 });
