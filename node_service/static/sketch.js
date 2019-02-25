@@ -10,7 +10,7 @@ let noseY = 0;
 let eye1X, eye1Y;
 let wrist1X, wrist1Y, wrist2X, wrist2Y;
 
-// Arrays to store the current Sprite objects of the particular types inside the canvas
+// GLobal arrays to store the current Sprite objects of the particular types inside the canvas
 let cupcake = [];
 let water = [];
 let coke = [];

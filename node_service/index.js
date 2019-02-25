@@ -3,6 +3,7 @@
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
+const { print, write, error, JSON_string } = require('./utils');
 // Socket.io used to maintain active web-sockets
 const io = require('socket.io')(http);
 const db = require('./db');
@@ -11,12 +12,6 @@ const db = require('./db');
 
 /* Global variables */
 const port = 3000;
-
-/* Utilities function bindings */
-const print = console.log;
-const error = console.error;
-const write = process.stdout.write;
-
 
 // socket.io events
 // io.on('connection', (socket) => {
@@ -30,13 +25,6 @@ const write = process.stdout.write;
 
 // Allow express to serve static content to the User from the static assets directory
 app.use(express.static('static'))
-
-// Wrapper function over JSON.stringify to catch potential errors with a try/catch block
-function JSON_string(object) {
-	try {
-		return JSON.stringify(object);
-	} catch (err) { error(err); } // Log errors if any and continue
-}
 
 // Ping Route to check server status
 app.get('/ping', (req, res, next) => {
