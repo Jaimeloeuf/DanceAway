@@ -2,12 +2,21 @@
 
 const express = require('express');
 const app = express();
+module.exports.app = app;
+
 const http = require('http').Server(app);
 const { print, write, error, JSON_string } = require('./utils');
 // Socket.io used to maintain active web-sockets
 const io = require('socket.io')(http);
 const db = require('./db');
 // Finalhandler module to deal with responding back to the client and closing the connection
+
+
+/*	@Doc
+	Main server app instance module.
+	Exports the created server instance out for the routes in the routes folder to access it.
+	This module only holds some misc. routes like ping and error handling routes like for 404.
+*/
 
 
 /* Global variables */
@@ -49,22 +58,6 @@ app.get('/game', (req, res, next) => {
 function get_socket_count() {
 	return 1;
 }
-
-// API to get the highscore of the user with "userID"
-app.get('/highscore/:userID', (req, res, next) => {
-	// Get highscore with userID and send it back as a JSON string
-	res.end(JSON_string({
-		res: db.get_highscore(req.params.userID)
-	}));
-});
-
-// API to set a highscore for user with "userID"
-app.post('/highscore/:userID/:score', (req, res, next) => {
-	// Update highscore and respond back with a boolean to indicate operation success
-	res.end(JSON_string({
-		res: db.set_highscore(req.params.userID, req.params.score)
-	}));
-});
 
 // Function to get the leaderboard
 app.get('/leaderboard', (req, res, next) => {
