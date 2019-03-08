@@ -13,6 +13,18 @@
 </head>
 
 <body>
+	<script>
+		// Function that takes a field to search as the key of the query
+		function getQuery(field) {
+			let url = window.location.href;
+			let reg = new RegExp('[?&' + field + '=([^&#]*)', 'i');
+			search_result = reg.exec(url)
+			// return search_result ? search_result[1] : null;
+			return search_result[1];
+		}
+
+		let userID = getQuery('userID');
+	</script>
 	<script src="Sprite.js"></script>
 	<script src="sketch.js"></script>
 	<h3 id="lives"></h3>
