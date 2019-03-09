@@ -1,9 +1,13 @@
 // Global variables for use of reference
 var video;
-var poseNet;
-// Every player starts off with 3 Lives
+
+// Every player starts off with 3 Lives and score of 0
 var lives = 3;
 var score = 0;
+
+// Global variables to hold the different images
+var cc, wt, ck, ap;
+
 let skeletons = [];
 let noseX = 0;
 let noseY = 0;
@@ -40,8 +44,9 @@ function setup() {
 	video.hide();
 
 	// Use poseNet from ml5 lib to get user's poses
-	poseNet = ml5.poseNet(video, modelReady);
-	poseNet.on('pose', getPoses);
+	// let poseNet = ml5.poseNet(video, modelReady);
+	// poseNet.on('pose', getPoses);
+	ml5.poseNet(video, modelReady).on('pose', getPoses);
 
 	// Create the 2 buttons using p5.js
 	pause_button = createButton('Pause');
@@ -61,9 +66,9 @@ function pause_game() {
 }
 
 function continue_game() {
-	// Stop the video capture
+	// Start the video capture
 	// video.start();
-	// Stop the draw() loop
+	// Start the draw() loop
 	loop();
 }
 
@@ -87,8 +92,10 @@ function modelReady() {
 }
 
 function draw() {
+	// Flip the image on the canvas as the camera feed is mirrored
 	translate(video.width, 0);
 	scale(-1.0, 1.0);
+	// Draw the canvas using fames of the video
 	image(video, 0, 0);
 
 	// Call to draw wrists out, with nose to eye as reference distance
@@ -219,16 +226,24 @@ function getFood() {
 	http.open("GET", url);
 	http.setRequestHeader("X-RapidAPI-Key", "15409923e6mshd754f3ed4a3971ap11964djsn74692d63785c");
 	http.send();
-	http.onreadystatechange = (e) => {
-		document.getElementById('lives').innerHTML = `Foood Trivia:</h4><br><h4>${JSON.parse(http.responseText).answer}`;
-	}
+	http.onreadystatechange = (e) => document.getElementById('lives').innerHTML = `Foood Trivia:</h4><br><h4>${JSON.parse(http.responseText).answer}`;
+}
+
+// Basically the fetch function
+function get(url, callback) {
+	const xhttp = new XMLHttpRequest();
+	// Call the callback function with this AJAX object
+	xhttp.onreadystatechange = () => callback(xhttp);
+	// Make the AJAX request in async manner
+	xhttp.open("GET", url, true);
+	// xhttp.setRequestHeader("", "");
+	xhttp.send();
 }
 
 function print_leaderboard() {
 	/* Fetch the leaderboard data from the server and create HTML block to display */
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function () {
-		if (this.readyState == 4 && this.status == 200) {
+	get("http://localhost:3000/leaderboard", (xhttp) => {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
 			/* Create the HTML element */
 			// Find a <table> element with id="leaderboard":
 			let table = document.getElementById("leaderboard");
@@ -239,7 +254,7 @@ function print_leaderboard() {
 			row.insertCell(1).innerHTML = "Highscore";
 
 			// Parse and extract out the leaderboard
-			let leaderboard = JSON.parse(this.responseText).res;
+			let leaderboard = JSON.parse(xhttp.responseText).res;
 
 			for (let i = 0; i < 10; i++) {
 				row = table.insertRow(-1);
@@ -247,9 +262,7 @@ function print_leaderboard() {
 				row.insertCell(1).innerHTML = leaderboard[i].score;
 			}
 		}
-	};
-	xhttp.open("GET", "http://localhost:3000/leaderboard", true);
-	xhttp.send();
+	});
 }
 
 function update_game_stats() {
