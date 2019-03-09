@@ -200,18 +200,23 @@ function draw() {
 	// Update the game stats at the end of every drawing loop
 	update_game_stats()
 
-	// If no more lives left, stop the game
-	if (lives < 1) {
-		// Stop the game
-		pause_game();
-		// Clear the whole sketch
-		remove();
-		// Remove the 'lives' stats
-		document.getElementById('lives').innerHTML = '';
-		// Write to the user about the results and the leaderboard
-		print_leaderboard();
-		getFood();
-	}
+	// End the game if no more lives are left
+	if (lives < 1)
+		game_end();
+}
+
+// Function to run when the game ends
+function game_end() {
+	// Stop the game
+	pause_game();
+	// Clear the whole sketch
+	remove();
+	// Remove the 'lives' stats
+	document.getElementById('lives').innerHTML = '';
+	// Write to the user about the results and the leaderboard
+	print_leaderboard();
+	// Get food trivia and display onto the canvas
+	getFood();
 }
 
 function generateRandomQuestion() {
@@ -223,10 +228,10 @@ function getFood() {
 	const http = new XMLHttpRequest();
 	var question = generateRandomQuestion();
 	const url = 'https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/quickAnswer?q=' + encodeURI(question);
+	http.onreadystatechange = (e) => document.getElementById('lives').innerHTML = `Foood Trivia:</h4><br><h4>${JSON.parse(http.responseText).answer}`;
 	http.open("GET", url);
 	http.setRequestHeader("X-RapidAPI-Key", "15409923e6mshd754f3ed4a3971ap11964djsn74692d63785c");
 	http.send();
-	http.onreadystatechange = (e) => document.getElementById('lives').innerHTML = `Foood Trivia:</h4><br><h4>${JSON.parse(http.responseText).answer}`;
 }
 
 // Basically the fetch function
