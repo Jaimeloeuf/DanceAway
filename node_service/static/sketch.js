@@ -213,6 +213,21 @@ function game_end() {
 	remove();
 	// Remove the 'lives' stats
 	document.getElementById('lives').innerHTML = '';
+
+	// Now that the game has ended check if the user have entered their userID before the game
+	let userID = getQuery('userID');
+	// If user entered a userID
+	if (userID) {
+		// Create a XHTTP object
+		const xhttp = new XMLHttpRequest();
+		// For now do nothing when the server responds back
+		xhttp.onreadystatechange = (e) => {};
+		// Generate the URL endpoint to post to for updating highscore if possible and open an AJAX connection with it
+		xhttp.open("GET", `http://localhost:3000/highscore/${userID}/${score}`);
+		// Make the request
+		xhttp.send();
+	}
+
 	// Write to the user about the results and the leaderboard
 	print_leaderboard();
 	// Get food trivia and display onto the canvas

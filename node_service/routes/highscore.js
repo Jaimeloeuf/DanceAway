@@ -18,6 +18,7 @@ app.get('/highscore/:userID', (req, res, next) => {
 });
 
 // API to set a highscore for user with "userID"
+// Supposed to post the highscore using the request body, but much easier to implement into the URL for now
 app.post('/highscore/:userID/:score', (req, res, next) => {
 	// Update highscore and respond back with a boolean to indicate operation success
 	res.end(JSON_string({
