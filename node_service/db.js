@@ -1,18 +1,17 @@
 'use strict'; // Enforce use of strict verion of JavaScript
 
 const fs = require('fs');
-
-/* Utilities function bindings */
-const print = console.log;
-
+const { print } = require('./utils');
 
 // Global in memory reference of the user DB. Users are basically kv pairs of userID and highscore
 var userDB;
 // Global in memory reference of leaderboard DB. Will be an array of user objects
 var leaderboard;
+/*	The leaderboard structure only holds the top 10 scores.
+	Once a user is kicked off the top 10, it will no longer be stored.
+*/
 
-/*
-	Every DB is a corresponding JSON file that already exists.
+/*	Every DB is a corresponding JSON file that already exists.
 
 	User DB stores
 		userID (string Key) : highscore (Int Prop)
@@ -21,7 +20,6 @@ var leaderboard;
 		position (int key) : user Obj => {
 			userID (string Key) : highscore (Int Prop)
 		}
-
 */
 
 // Read DB file "db" and return it to function caller
@@ -38,7 +36,7 @@ const read_db = (db) =>
 	});
 
 
-// Read DB file "db" and return it to function caller
+// Write the DB data held in memory into the "db" DB file
 const update_db = (db, data) => {
 	// Write to the "DB" json file asynchronously
 	fs.writeFile(`./Databases/${db}.json`, JSON.stringify(data), (err) => {
@@ -47,7 +45,7 @@ const update_db = (db, data) => {
 	});
 }
 
-// Self-invoking setup function
+// Self-invoking setup function that runs when this module is "required"
 (function setup() {
 	// Read all the data from the "DB" files into memory at setup
 	read_db('user')
@@ -57,7 +55,7 @@ const update_db = (db, data) => {
 		.then((data) => leaderboard = data['top10']);
 })();
 
-
+// Function that creates a user entry in the userDB with "userID"
 function create_user(userID) {
 	// Creates a user entry in the userDB if the input userID does not collide with existing names
 
@@ -120,7 +118,7 @@ function reset_highscore(userID) {
 	}
 }
 
-// Function only called if the user broke his/her own record
+// Update leaderboard function that's only called if user broke his/her own record
 function update_leaderboard(userObj) {
 	// Loop through the leaderboard to see if score qualifies
 	for (let i = 0; i < 10; i++) {
@@ -151,6 +149,22 @@ function update_leaderboard(userObj) {
 	}
 }
 
+/*	Exported items:
+	- Methods to read, update and reset user's highscore.
+	- Method to read a copy of the in memory leaderboard
+
+	Notes:
+	- External modules have no direct access to the userDB or their scores, only those
+	  produced by the methods, which prevent them from modifying the values stored in
+	  the DB randomly.
+	- The leaderboard is ony available as a copy of the leaderboard held in memory that
+	  is true at time of request only, if leaderboard in memory is updated, the value
+	  that external modules hold through the get_leaderboard method is not updated, thus
+	  the requested value should only be used once, and should be requested and generated
+	  over again everytime.
+	- External modules have no direct access to the userDB memory structure to prevent
+	  accidental access and modifications
+*/
 module.exports = {
 	// Allow external modules to use all highscore related functions
 	get_highscore: get_highscore,

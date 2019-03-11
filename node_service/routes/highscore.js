@@ -1,13 +1,13 @@
 'use strict'; // Enforce use of strict verion of JavaScript
 
 /*	@Doc
-	Server Routes for highscore
+	Server Routes for accessing and using highscores
 */
 
 
-// Dependencies. The server app instance and the db functions
+// Dependencies. The server app instance and the db methods
 const app = require('../index').app;
-const db = require('./db');
+const db = require('../db');
 
 // API to get the highscore of the user with "userID"
 app.get('/highscore/:userID', (req, res, next) => {
