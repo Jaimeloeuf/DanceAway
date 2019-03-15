@@ -2,37 +2,40 @@
 <html>
 
 <head>
-	<script src="p5.min.js"></script>
-	<script src="p5.dom.min.js"></script>
-	<script src="p5.sound.min.js"></script>
-	<script src="ml5.min.js"></script>
-	<script type="text/javascript" src="sketch"></script>
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<meta charset="utf-8">
+    <script src="p5.min.js"></script>
+    <script src="p5.dom.min.js"></script>
+    <script src="p5.sound.min.js"></script>
+    <script src="ml5.min.js"></script>
+    <script type="text/javascript" src="sketch.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8">
 
 </head>
 
 <body>
-	<script>
-		// Function that takes a field to search as the key of the query
-		function getQuery(field) {
-			let url = window.location.href;
-			let reg = new RegExp('[?&' + field + '=([^&#]*)', 'i');
-			search_result = reg.exec(url)
-			// return search_result ? search_result[1] : null;
-			return search_result[1];
-		}
+    <script>
+        // Function that takes a field to search as the key of the query
+        function getQuery(field) {
+            let url = window.location.href;
+            let reg = new RegExp('[?&' + field + '=([^&#]*)', 'i');
+            search_result = reg.exec(url)
+            // return search_result ? search_result[1] : null;
+            return search_result[1];
+        }
 
-		// let userID = getQuery('userID');
-	</script>
-	<script src="Sprite.js"></script>
-	<script src="sketch.js"></script>
-	<h3 id="lives"></h3>
-	<h3 id="score"></h3>
+        let userID = getQuery('userID');
+        console.log(userID);
+    </script>
+    <script src="Sprite.js"></script>
+    <script src="sketch.js"></script>
+    <h3 id="userID"></h3>
+    <h3 id="lives"></h3>
+    <h3 id="score"></h3>
 
-	<h4 id="trivia"></h4>
+    <h4 id="trivia"></h4>
 
-	<table id="leaderboard"></table>
+    <table id="leaderboard"></table>
+    <script>document.getElementById('userID').innerHTML = getQuery('userID');</script>
 </body>
 
 </html>

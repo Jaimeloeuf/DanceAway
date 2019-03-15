@@ -43,9 +43,10 @@ function get_socket_count() {
 
 
 // Function invoked at the start of the game after logging in
+// Secure this route and redirect to game.html after sending user a JWT
 app.get('/game', (req, res, next) => {	
 	// UserID is part of the URL encoded query string
-	res.end(req.query.userID);
+    // res.end(req.query.userID);
 });
 
 

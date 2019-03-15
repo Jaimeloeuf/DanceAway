@@ -187,8 +187,9 @@ function draw() {
 	if (frameCount % 60 == 0) {
 		// RNG to choose which item to drop
 		let Sprite_object_type = int(random(1, 5));
-		print(`The random number generated is ${Sprite_object_type}`);
+		print(`The random number generated is ${Sprite_object_type}`); // Debug statement
 
+		// Create a new sprite and add it into the array for the generated item type
 		switch (Sprite_object_type) {
 			case 1: water.push(new Sprite()); break;
 			case 2: cupcake.push(new Sprite()); break;
@@ -197,7 +198,7 @@ function draw() {
 		}
 	}
 
-	// Update the game stats at the end of every drawing loop
+	// Update the game stats at the end of every drawing/calculation loop
 	update_game_stats()
 
 	// End the game if no more lives are left
