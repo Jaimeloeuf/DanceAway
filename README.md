@@ -28,3 +28,10 @@ Native code running requires Node.JS v10 and above. Run "npm install" before run
 
 - Like the normal game, after the game ends, display the high score/leaderboard of the game from the backend service
 - The service will always be keeping a copy of the highscore board in memory, so when a new score comes in, it will be checked and updated immediately if necessary.
+
+## Future features
+- Add the authentication page with a login and logout feature to secure the user data.
+- Share your highscore on social media.
+- Multiplayer mode as mentioned above.
+- Invite your friends to play and compete against you.
+- Expand the diabetes related knowledge base in the app, so that user can see more different trivias and stuff
