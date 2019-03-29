@@ -4,13 +4,10 @@
 	This module will hold all the related codes and routes for multiplayer mode
 */
 
-
-const app = require('../index').app;
+const express = require('express');
+const router = express.Router();
 // Socket.io used to maintain active web-sockets
 const io = require('socket.io')(http);
-
-
-
 
 // socket.io events.
 // io.on('connection', (socket) => {
@@ -20,3 +17,5 @@ const io = require('socket.io')(http);
 // 	// socket.emit('message', 'New msg from server')
 // 	socket.broadcast.emit('message', 'msg to all units')
 // });
+
+module.exports = router;
