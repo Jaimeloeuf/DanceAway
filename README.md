@@ -1,15 +1,18 @@
 # DanceAway
-
-## Repo description
-A gamified solution to solve the medical challenge of diabetes faced by society.
-This game will help to encourage and motivate people to exercise in order to stop diabetes and to raise awareness of diabetes.
+A gamified solution to solve medical challenge of diabetes in society through elements such as, Point Scoring, Player Lives, Score Leaderboard and multiplayer mode to further encourage engagement with the game and serve as a form of motivation for people to exercise with diabetes-prevention knowledge passed on to them. This helps to encourage a more active nation and also raises diabetes awareness through the subconcious hinting build into the elements of the game.
 
 
 ## Tech Stack
 The game itself is build with the p5.JS library for graphics rendering.
 The backend web service for the game is built with Express on Node JS.
+Will be building the backend into a Docker image that can be run be Cloud Services like Google App Engine, but am also considering building the data related backend code to use Firebase with the integrated databases through the Cloud Functions.
 
-### Multiplayer
+## To run the game
+Either clone the repo to play on your own machine with your own computer acting as the server for the game data, or by accessing the offical game website [here](https://dancingchair-a4810.firebaseapp.com/)
+To run on your local machine, you can either choose to run the app with the provided Docker image, or run it natively.
+Native code running requires Node.JS v10 and above. Run "npm install" before running "npm start"
+
+## Multiplayer (To be built)
 - Out of the 2 user playing, 1 must press play multiplayer.
 - After pressing, user must enter the opponent's userID
 - The multiplayer request will be shown on the opponent's screen with a accept/reject request menu
