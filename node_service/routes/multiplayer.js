@@ -7,7 +7,7 @@
 const express = require('express');
 const router = express.Router();
 // Socket.io used to maintain active web-sockets
-const io = require('socket.io')(http);
+// const io = require('socket.io')(http);
 
 // socket.io events.
 // io.on('connection', (socket) => {

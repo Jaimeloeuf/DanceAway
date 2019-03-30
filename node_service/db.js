@@ -1,7 +1,9 @@
 'use strict'; // Enforce use of strict verion of JavaScript
 
 const fs = require('fs');
-const { print } = require('./utils');
+
+/* Utility function binding */
+const print = console.log;
 
 // Global in memory reference of the user DB. Users are basically kv pairs of userID and highscore
 var userDB;
