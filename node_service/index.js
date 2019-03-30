@@ -23,7 +23,7 @@ app.use(express.static('static'));
 
 
 /* Mount all routers from the routes directory onto the Express app */
-app.use(require('./routes/highscore'));
+app.use('/highscore', require('./routes/highscore'));
 app.use(require('./routes/multiplayer'));
 
 
