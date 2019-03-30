@@ -10,12 +10,14 @@
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
-const { print, JSON_string } = require('./utils');
 const db = require('./db');
 // Finalhandler module to deal with responding back to the client and closing the connection
 
 /* Global variables */
 const port = 3000;
+
+/* Utility function binding */
+const print = console.log;
 
 
 // Allow express to serve static content to the User from the "static" assets directory
@@ -56,9 +58,9 @@ app.get('/game', (req, res, next) => {
 
 // Route handler for getting the leaderboard
 app.get('/leaderboard', (req, res, next) => {
-	res.end(JSON_string({
-		res: db.get_leaderboard();
-	}));
+	res.json({
+		res: db.get_leaderboard()
+	});
 });
 
 
