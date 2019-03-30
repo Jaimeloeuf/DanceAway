@@ -30,7 +30,7 @@ app.use(require('./routes/multiplayer'));
 
 
 // Ping Route to check server status
-app.get('/ping', (req, res, next) => {
+app.get('/ping', (req, res) => {
 	/*	Things to return to client
 		- Number of active connections with socket.io
 		- The number of multiplayer game-rooms alive
@@ -50,14 +50,14 @@ function get_socket_count() {
 
 // Function invoked at the start of the game after logging in
 // Secure this route and redirect to game.html after sending user a JWT
-app.get('/game', (req, res, next) => {	
+app.get('/game', (req, res) => {	
 	// UserID is part of the URL encoded query string
     // res.end(req.query.userID);
 });
 
 
 // Route handler for getting the leaderboard
-app.get('/leaderboard', (req, res, next) => {
+app.get('/leaderboard', (req, res) => {
 	res.json({
 		res: db.get_leaderboard()
 	});
@@ -65,13 +65,13 @@ app.get('/leaderboard', (req, res, next) => {
 
 
 // 404 route handler
-app.use((req, res, next) => {
-	res.status(404).send("Sorry can't find that!");
+app.use((req, res) => {
+	res.status(404).send("Sorry URL and resource requested is not available");
 });
 
 
 // 500 internal server error route handler
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
 	print(err.stack);
 	res.status(500).send('Something broke!');
 });
