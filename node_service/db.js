@@ -1,73 +1,48 @@
 'use strict'; // Enforce use of strict verion of JavaScript
 
-const fs = require('fs');
+/*  @Doc
+    This module contains all interface for data persistence
+
+    @Todo
+    - Fixed the highscore related functions following API change of DB objects
+*/
+
+const DB = require('./Database');
 
 /* Utility function binding */
 const print = console.log;
 
-// Global in memory reference of the user DB. Users are basically kv pairs of userID and highscore
-var userDB;
-// Global in memory reference of leaderboard DB. Will be an array of user objects
-var leaderboard;
-/*	The leaderboard structure only holds the top 10 scores.
-	Once a user is kicked off the top 10, it will no longer be stored.
-*/
 
-/*	Every DB is a corresponding JSON file that already exists.
+// Every DB is a corresponding JSON file that already exists.
+/*  Global in memory reference to the user DB.
+    Users are basically kv pairs of userID and highscore.
 
-	User DB stores
-		userID (string Key) : highscore (Int Prop)
-
-	Leader board
-		position (int key) : user Obj => {
-			userID (string Key) : highscore (Int Prop)
-		}
-*/
-
-// Read DB file "db" and return it to function caller
-const read_db = (db) =>
-    new Promise((resolve, reject) => {
-        // Read the "DB" json file asynchronously
-        fs.readFile(`./Databases/${db}.json`, 'utf8', function (err, data) {
-            // Let any errors bubble up
-            if (err) throw err;
-            // Resolve with the parsed JSON file
-            try { resolve(JSON.parse(data)); }
-            catch (err) { return reject(err); }
-        });
-    });
+    Schema
+    userID (string Key) : highscore (Int Prop)  */
 
 
-// Write the DB data held in memory into the "db" DB file
-const update_db = (db, data) => {
-    // Write to the "DB" json file asynchronously
-    fs.writeFile(`./Databases/${db}.json`, JSON.stringify(data), (err) => {
-        // Let any errors bubble up
-        if (err) throw err;
-    });
-}
+const userDB = DB('user');
+/*  Global in memory reference of leaderboard DB.
+    leaderboard is an array of user objects.
 
-// Self-invoking setup function that runs when this module is "required"
-(function setup() {
-    // Read all the data from the "DB" files into memory at setup
-    read_db('user')
-        .then((data) => userDB = data);
-    // Read array property of 'top10' key out and store in memory
-    read_db('leaderboard')
-        .then((data) => leaderboard = data['top10']);
-})();
+    Schema
+    position (int key) : user Obj => {
+        userID (string Key) : highscore (Int Prop)
+    }   */
+const leaderboard = DB('leaderboard');
+
 
 // Function that creates a user entry in the userDB with "userID"
 function create_user(userID) {
     // Creates a user entry in the userDB if the input userID does not collide with existing names
 
-    if (Object(userDB).hasOwnKeys(userID))
+    if (Object(userDB.data).hasOwnKeys(userID))
         return false; // To indicate operation failure
 
     else {
-        userDB[userID] = 0; // Create user entry and set default highscore to 0
+        userDB.data[userID] = 0; // Create user entry and set default highscore to 0
         // Update user DB after the change of the in memory data object
-        update_db('user', userDB);
+        userDB.save();
         return true; // To indicate operation success
     }
 }
