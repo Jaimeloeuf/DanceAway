@@ -120,8 +120,57 @@ function reset_highscore(userID) {
     }
 }
 
-// Update leaderboard function that's only called if user broke his/her own record
 function update_leaderboard(user) {
+    /*  Update leaderboard function is only called if user broke own record
+        user's last highscore is definetly overwritten which means that we
+        just need to check if the user exists on the board first */
+
+
+    // Function to delete user if they have a older placing on the leaderboard
+    function delete_user_if_exist_in_leaderboard(user) {
+        for (let i = 0, len = leaderboard.length; i < len; i++) {
+            // First step is check if the user is already on the leaderboard
+            if (user.userID === leaderboard[i].userID) {
+                leaderboard.splice(i, 1); // Delete the user
+                // Once the user is deleted, we can now return a true and exit the function
+                return true;
+            }
+        }
+    }
+
+
+    // Function to insert the user into the leaderboard if the scoring criteria is met
+    function insert_user_into_leaderboard(user) {
+        for (let i = 0, len = leaderboard.length; i < len; i++) {
+            // If the score is higher than insert it before that score
+            if (user.score > leaderboard[i]) {
+                // Insert user Obj without deletion
+                leaderboard.splice(i, 0, user);
+                // Return true to indicate that there is an insertion
+                return true;
+            }
+        }
+    }
+
+
+    // If user earned a place on the leaderboard
+    if (insert_user_into_leaderboard(user)) {
+        /*  Remove original placing if any.
+            If user no old placing,
+            remove last user so top 10 leaderboard only have 10 users
+        */
+        if (!delete_user_if_exist_in_leaderboard(user))
+            if (leaderboard.length > 10)
+                leaderboard.pop();
+
+        // Persists these changes/updates to the leaderboard onto disk
+        update_db('leaderboard', { top10: leaderboard });
+    }
+}
+
+
+// To deprecate after tests
+function update_leaderboard_old(user) {
     // Loop through the leaderboard to see if score qualifies
     for (let i = 0; i < 10; i++) {
         if (user.score > leaderboard[i].score) {
@@ -147,62 +196,6 @@ function update_leaderboard(user) {
             update_db('leaderboard', { top10: leaderboard });
             // Break out of the loop after insertion and maintaining 10 ppl in the leaderboard
             return;
-        }
-    }
-
-    // Loop through leaderboard to see if score qualifies
-    for (let i = 0, len = Object.keys(leaderboard).length; i < len; i++) {
-        if (user.score > leaderboard[i].score) {
-            // Insert the element into the array at the specified index
-            leaderboard.splice(i, 0, user);
-
-            // Loop through the rest of the leaderboard to find if same user had other leaderboard entries
-            for (let j = (i + 1); j < len; j++) {
-                // If the user have any other entries with a lower highscore
-                if (user.userID === leaderboard[j].userID) {
-                    // Remove the entry with the lower highscore
-                    leaderboard.splice(j, 1);
-                    // Persists the changes/updates to the leaderboard onto disk
-                    update_db('leaderboard', { top10: leaderboard });
-                    // Break out of the function after cleaning up the score and making sure the leaderboard is still for top 10 players
-                    return;
-                }
-            }
-
-            // If there is more than 10 user in the top 10 leaderboard
-            if (len > 10)
-                // Remove last user if no other entry from the same user
-                leaderboard.pop();
-            // Persists the changes/updates to the leaderboard onto disk
-            update_db('leaderboard', { top10: leaderboard });
-            // Break out of the loop after insertion and maintaining 10 ppl in the leaderboard
-            return;
-        }
-    }
-
-    /* Might need to rewrite the loop
-    What if the user just nice overwrite his own high score?
-    What if the user have a placing higher? Than the check wont work */
-
-    for (let i = 0, len = Object.keys(leaderboard).length; i < len; i++) {
-
-        // If user's score is higher than a highscore on the leaderboard
-        if (user.score > leaderboard[i].score) {
-
-            // Insert the element into the array at the specified index
-            leaderboard.splice(i, 0, user);
-
-            /* Remove from leaderboard if user have another placing on it */
-            // Loop through the rest of the list to see if user have another placing
-            for (let j = (i + 1); j < len; j++) {
-
-                // If user have another placing
-                if (leader.userID === user.userID) {
-                    // Remove the entry with the lower highscore
-                    leaderboard.splice(j, 1);
-                }
-
-            }
         }
     }
 }
