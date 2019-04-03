@@ -121,17 +121,45 @@ function reset_highscore(userID) {
 }
 
 // Update leaderboard function that's only called if user broke his/her own record
-function update_leaderboard(userObj) {
+function update_leaderboard(user) {
 	// Loop through the leaderboard to see if score qualifies
 	for (let i = 0; i < 10; i++) {
-		if (userObj.score > leaderboard[i].score) {
+		if (user.score > leaderboard[i].score) {
 			// Insert the element into the array at the specified index
-			leaderboard.splice(i, 0, userObj);
+			leaderboard.splice(i, 0, user);
 
 			// Loop through the rest of the leaderboard to find if same user had other leaderboard entries
 			for (let j = (i + 1); j < 10; j++) {
 				// If the user have any other entries with a lower highscore
-				if (userObj.userID === leaderboard[j].userID) {
+				if (user.userID === leaderboard[j].userID) {
+					// Remove the entry with the lower highscore
+					leaderboard.splice(j, 1);
+					// Persists the changes/updates to the leaderboard onto disk
+					update_db('leaderboard', { top10: leaderboard });
+					// Break out of the function after cleaning up the score and making sure the leaderboard is still for top 10 players
+					return;
+				}
+			}
+			
+			// Remove the last element from the leaderboard if no other entry from the same user
+			leaderboard.pop();
+			// Persists the changes/updates to the leaderboard onto disk
+			update_db('leaderboard', { top10: leaderboard });
+			// Break out of the loop after insertion and maintaining 10 ppl in the leaderboard
+			return;
+		}
+    }
+    
+    // Loop through leaderboard to see if score qualifies
+	for (let i = 0, len = Object.keys(leaderboard).length; i < len; i++) {
+		if (user.score > leaderboard[i].score) {
+			// Insert the element into the array at the specified index
+			leaderboard.splice(i, 0, user);
+
+			// Loop through the rest of the leaderboard to find if same user had other leaderboard entries
+			for (let j = (i + 1); j < len; j++) {
+				// If the user have any other entries with a lower highscore
+				if (user.userID === leaderboard[j].userID) {
 					// Remove the entry with the lower highscore
 					leaderboard.splice(j, 1);
 					// Persists the changes/updates to the leaderboard onto disk
