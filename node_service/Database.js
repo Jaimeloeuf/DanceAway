@@ -67,4 +67,6 @@ async function DB(database_string) {
     this.save = this._save(this.data);
 }
 
+// The only thing that is exported is the DB factory function.
+// Module users cannot access the other disk read and write functions
 module.exports = DB;

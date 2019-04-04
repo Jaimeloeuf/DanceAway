@@ -19,9 +19,9 @@ const print = console.log;
 
     Schema
     userID (string Key) : highscore (Int Prop)  */
-
-
 const userDB = DB('user');
+
+
 /*  Global in memory reference of leaderboard DB.
     leaderboard is an array of user objects.
 

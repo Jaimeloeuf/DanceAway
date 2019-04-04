@@ -30,7 +30,7 @@ function preload() {
 	ck = loadImage('coke.png');
 	ap = loadImage('apple.png');
 }
-
+var interval;
 // Setup function to run before the game begins
 function setup() {
 	// Create/Draw the canvas out
@@ -55,21 +55,38 @@ function setup() {
 	continue_button.mousePressed(continue_game);
 
 	// Set text size for the scoreboard and live count
-	textSize(32);
+    textSize(32);
+    
+
+    interval = setInterval(() => {
+        // RNG to choose which item to drop
+		let Sprite_object_type = int(random(1, 5));
+		print(`The random number generated is ${Sprite_object_type}`); // Debug statement
+
+		// Create a new sprite and add it into the array for the generated item type
+		switch (Sprite_object_type) {
+			case 1: water.push(new Sprite()); break;
+			case 2: cupcake.push(new Sprite()); break;
+			case 3: coke.push(new Sprite()); break;
+			case 4: apple.push(new Sprite()); break;
+		}
+    }, 2000);
 }
 
 function pause_game() {
 	// Stop the video capture
 	// video.stop();
-	// Stop the draw() loop
-	noLoop();
+    // Stop the draw() loop
+    noLoop();
+    clearInterval(interval);
 }
 
 function continue_game() {
 	// Start the video capture
 	// video.start();
 	// Start the draw() loop
-	loop();
+    loop();
+    setInterval(interval);
 }
 
 function getPoses(poses) {
@@ -184,20 +201,20 @@ function draw() {
 	}
 
 
-	if (frameCount % 60 == 0) {
-		// RNG to choose which item to drop
-		let Sprite_object_type = int(random(1, 5));
-		print(`The random number generated is ${Sprite_object_type}`); // Debug statement
+	// if (frameCount % 60 == 0) {
+	// 	// RNG to choose which item to drop
+	// 	let Sprite_object_type = int(random(1, 5));
+	// 	print(`The random number generated is ${Sprite_object_type}`); // Debug statement
 
-		// Create a new sprite and add it into the array for the generated item type
-		switch (Sprite_object_type) {
-			case 1: water.push(new Sprite()); break;
-			case 2: cupcake.push(new Sprite()); break;
-			case 3: coke.push(new Sprite()); break;
-			case 4: apple.push(new Sprite()); break;
-		}
-	}
-
+	// 	// Create a new sprite and add it into the array for the generated item type
+	// 	switch (Sprite_object_type) {
+	// 		case 1: water.push(new Sprite()); break;
+	// 		case 2: cupcake.push(new Sprite()); break;
+	// 		case 3: coke.push(new Sprite()); break;
+	// 		case 4: apple.push(new Sprite()); break;
+	// 	}
+    // }
+    
 	// Update the game stats at the end of every drawing/calculation loop
 	update_game_stats()
 
