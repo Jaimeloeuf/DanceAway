@@ -47,3 +47,7 @@ Native code running requires Node.JS v10 and above. Run "npm install" before run
 - Multiplayer mode as mentioned above.
 - Invite your friends to play and compete against you.
 - Expand the diabetes related knowledge base in the app, so that user can see more different trivias and stuff
+
+## License
+This framework is open source under the "BSD 3-Clause License".  
+The author holds no liabilities for how this project is used.
