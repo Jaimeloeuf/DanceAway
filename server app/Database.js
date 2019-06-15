@@ -43,11 +43,18 @@ const update_db = (db, data) => {
 class DB_class {
     constructor(database_string) {
         this.database = database_string;
-        this.data = this.read_db();
+
+        this.data = this.read_db(database_string);
+        this._save = update(this.database);
     }
-    read = () => this.data = read_db(this.database);
-    _save = update(this.database);
-    save = () => this._save(this.data);
+
+    read() {
+        this.data = read_db(this.database);
+    }
+
+    save() {
+        this._save(this.data);
+    }
 }
 
 // Async factory function for creating database objects
