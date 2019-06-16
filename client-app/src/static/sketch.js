@@ -20,9 +20,6 @@ let water = [];
 let coke = [];
 let apple = [];
 
-/* Utilities function bindings */
-const print = console.log;
-
 // Function called before setup() to load static resources asynchronously in a blocking way.
 function preload() {
 	cc = loadImage('cupcake.png');
@@ -61,7 +58,7 @@ function setup() {
     interval = setInterval(() => {
         // RNG to choose which item to drop
 		let Sprite_object_type = int(random(1, 5));
-		print(`The random number generated is ${Sprite_object_type}`); // Debug statement
+		console.log(`The random number generated is ${Sprite_object_type}`); // Debug statement
 
 		// Create a new sprite and add it into the array for the generated item type
 		switch (Sprite_object_type) {
